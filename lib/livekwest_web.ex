@@ -59,6 +59,8 @@ defmodule LivekwestWeb do
       import LivekwestWeb.QuestionCardComponents
       import LivekwestWeb.ParticipantListComponents
       import LivekwestWeb.JoinFormComponents
+      import LivekwestWeb.AnswerForm
+      import LivekwestWeb.Icons
     end
   end
 

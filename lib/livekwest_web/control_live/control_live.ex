@@ -30,13 +30,13 @@ defmodule LivekwestWeb.ControlLive do
      |> assign(:participants, [])
      |> assign(:current_index, 0)
      |> assign(:current_question, nil)
-     |> assign(:started?, false)}
+     |> assign(:started, false)}
   end
 
   def handle_event("start_quiz", _, socket) do
     QuizManager.start_quiz(socket.assigns.code)
 
-    {:noreply, assign(socket, :started?, true)}
+    {:noreply, socket}
   end
 
   def handle_event("next_question", _, socket) do

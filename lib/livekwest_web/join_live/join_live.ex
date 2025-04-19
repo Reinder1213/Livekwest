@@ -90,7 +90,12 @@ defmodule LivekwestWeb.JoinLive do
   end
 
   def handle_info(:quiz_started, socket) do
-    {:noreply, assign(socket, :started, true)}
+    question = QuizManager.get_active_question(socket.assigns.code)
+
+    {:noreply,
+     socket
+     |> assign(:current_question, question)
+     |> assign(:started, true)}
   end
 
   def handle_info({:active_question_changed, question}, socket) do
@@ -99,6 +104,11 @@ defmodule LivekwestWeb.JoinLive do
 
   def handle_info(:kick_redirect, socket) do
     {:noreply, redirect(socket, to: ~p"/join")}
+  end
+
+  def handle_info({:submit_answer, %{question_id: qid, answer: value}}, socket) do
+    QuizManager.submit_answer(socket.assigns.code, qid, socket.assigns.participant.id, value)
+    {:noreply, socket}
   end
 
   def handle_info(msg, socket) do

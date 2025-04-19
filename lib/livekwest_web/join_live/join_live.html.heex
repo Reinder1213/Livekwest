@@ -1,7 +1,13 @@
 <div class="join_screen">
   <%= if @joined do %>
     <%= if @started && @current_question do %>
-      <.question_card question={@current_question} label="Question"></.question_card>
+      <.question_card question={@current_question} label="Question">
+        <.live_component
+          module={LivekwestWeb.AnswerForm}
+          id="answer-form"
+          question={@current_question}
+        />
+      </.question_card>
     <% else %>
       <.question_card question={%{text: "The quizmaster will start the quiz soon"}} label="Wating">
       </.question_card>
