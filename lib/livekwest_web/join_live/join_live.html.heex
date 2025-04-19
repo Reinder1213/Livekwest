@@ -1,0 +1,17 @@
+<div class="join_screen">
+  <%= if @joined do %>
+    <%= if @started && @current_question do %>
+      <.question_card question={@current_question} label="Question"></.question_card>
+    <% else %>
+      <.question_card question={%{text: "The quizmaster will start the quiz soon"}} label="Wating">
+      </.question_card>
+    <% end %>
+  <% else %>
+    <div class="card border bg-base-100 shadow-md">
+      <div class="card-body">
+        <.join_form avatar_options={@avatar_options} selected_avatar={@selected_avatar}>
+        </.join_form>
+      </div>
+    </div>
+  <% end %>
+</div>

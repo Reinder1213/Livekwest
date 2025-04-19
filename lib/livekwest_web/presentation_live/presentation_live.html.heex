@@ -1,0 +1,31 @@
+<div class="flex flex-col items-center justify-center h-100 text-center px-4">
+  <%= if @started && @current_question do %>
+    <.question_card question={@current_question} label="Question"></.question_card>
+  <% else %>
+    <h1 class="text-3xl font-bold font-hand mb-2">Waiting for quiz to start</h1>
+    <p class="mb-4 font-hand text-xl">Join in by entering the code below:</p>
+
+    <div class="bg-gray-200 text-black px-6 py-2 rounded-lg text-2xl font-mono tracking-widest mb-10">
+      {@code}
+    </div>
+
+    <%= for p <- @participants do %>
+      <%= if p == @latest_participant do %>
+        <div class="flex flex-col items-center mb-10 transition-all duration-300">
+          <div class="w-36 h-36 p-4 rounded-lg bg-gray-200 flex items-center justify-center font-bold shadow-lg">
+            <img src={~p"/images/avatars/#{p.avatar}"} />
+          </div>
+          <p class="mt-4 text-xl font-hand">{p.name} joined the fun</p>
+        </div>
+      <% end %>
+    <% end %>
+
+    <div class="flex flex-wrap justify-center gap-4 mt-auto">
+      <%= for p <- @participants do %>
+        <div class="w-16 h-16 flex items-center justify-center">
+          <img src={~p"/images/avatars/#{p.avatar}"} />
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>
