@@ -1,18 +1,27 @@
-# Livekwest
+# LiveKwest — Real-time pub quiz in Phoenix LiveView
 
-To start your Phoenix server:
+A simple tool to help out with your local fun pubquiz. In a Jackbox Games-like way people can join the fun and answer question. A nice presentation mode is there to be projected on a screen.
+Questions and answers are send back and forth in realtime.
 
-- Run `mix setup` to install and setup dependencies
-- Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
+To start the project:
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+- Run `docker-compose up --build` in the root
+- Run migration and seeds (when postgres is up) `docker compose run --rm app mix ecto.setup`
+- Or re-run migration and seeds (when postgres is up) `docker compose run --rm app mix ecto.reset`, as databse is not cleared on setup
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+Project is available at [`localhost:4000`](http://localhost:4000).
 
-## Learn more
+## Features
 
-- Official website: https://www.phoenixframework.org/
-- Guides: https://hexdocs.pm/phoenix/overview.html
-- Docs: https://hexdocs.pm/phoenix
-- Forum: https://elixirforum.com/c/phoenix-forum
-- Source: https://github.com/phoenixframework/phoenix
+- State of a quiz is managed in a QuizManager GenServer. It holds quiz state in memory.
+- A quiz is initialized from `ControlLive` by quizmaster.
+- LiveViews subscribe to quiz:<code> topics via Phoenix PubSub.
+- Broadcasts keep everyone in sync (presentation screen, control screen, join screen).
+- Participants have a generated id and are tracked per quiz. No need to signin for a spontanous quiz session.
+- Questions and answers are stored in memory for now.
+
+## Todo
+
+- [ ] Improve state managment with a GenServer per quiz
+- [ ] Scoring
+- [ ] Managing Quizzes
