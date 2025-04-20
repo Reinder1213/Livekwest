@@ -9,7 +9,7 @@ import Config
 config :livekwest, LivekwestWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
-  http: [ip: {127, 0, 0, 1}, port: 4000],
+  http: [ip: {0, 0, 0, 0}, port: 4000],
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
@@ -18,6 +18,15 @@ config :livekwest, LivekwestWeb.Endpoint,
     esbuild: {Esbuild, :install_and_run, [:livekwest, ~w(--sourcemap=inline --watch)]},
     tailwind: {Tailwind, :install_and_run, [:livekwest, ~w(--watch)]}
   ]
+
+config :livekwest, Livekwest.Repo,
+  username: "postgres",
+  password: "postgres",
+  hostname: "db",
+  database: "livekwest_dev",
+  stacktrace: true,
+  show_sensitive_data_on_connection_error: true,
+  pool_size: 10
 
 # ## SSL Support
 #
@@ -73,3 +82,6 @@ config :phoenix_live_view,
 
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false
+
+config :livekwest, Livekwest.Accounts.Guardian,
+  secret_key: "bWL0cf0M4exRpNIl0djP+CPXsR0XN67aD9M4oMkDLxQ="

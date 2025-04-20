@@ -1,6 +1,16 @@
 <header class="px-4 sm:px-6 lg:px-8 border-b border-zinc-100">
-  <div class="flex items-center justify-center py-3 text-sm">
-    Livekwest
+  <div class="flex items-center justify-around py-3 text-sm">
+    <%= if assigns[:current_user] do %>
+      <span class="mr-auto">{@current_user.name}</span>
+    <% end %>
+
+    <h4>Livekwest</h4>
+
+    <%= if assigns[:current_user] do %>
+      <.link href={~p"/logout"} method="delete" class="text-sm font-semibold ml-auto">
+        Log out
+      </.link>
+    <% end %>
   </div>
 </header>
 <main class="px-4 py-20 sm:px-6 lg:px-8">

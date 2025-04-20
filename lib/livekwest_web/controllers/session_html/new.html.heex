@@ -1,0 +1,10 @@
+<div class="mx-auto max-w-sm">
+  <.simple_form :let={f} for={%{}} action={~p"/login"} as={:session}>
+    <.input field={f[:email]} type="email" label="Email" required />
+    <.input field={f[:password]} type="password" label="Password" required />
+
+    <:actions>
+      <button class="btn btn-primary w-full">Sign in</button>
+    </:actions>
+  </.simple_form>
+</div> 

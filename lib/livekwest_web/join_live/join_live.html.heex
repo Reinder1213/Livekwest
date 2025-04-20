@@ -9,7 +9,10 @@
         />
       </.question_card>
     <% else %>
-      <.question_card question={%{text: "The quizmaster will start the quiz soon"}} label="Wating">
+      <.question_card
+        question={%{content: "The quizmaster will start the quiz soon"}}
+        label="Wating"
+      >
       </.question_card>
     <% end %>
   <% else %>

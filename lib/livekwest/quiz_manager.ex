@@ -12,17 +12,7 @@ defmodule Livekwest.QuizManager do
   def init(state), do: {:ok, state}
 
   def init_quiz(code, questions) do
-    questions_with_ids =
-      Enum.with_index(questions)
-      |> Enum.map(fn {text, index} ->
-        %{
-          id: generate_id(),
-          text: text,
-          index: index
-        }
-      end)
-
-    GenServer.cast(__MODULE__, {:init_quiz, code, questions_with_ids})
+    GenServer.cast(__MODULE__, {:init_quiz, code, questions})
   end
 
   def get_quiz(code), do: GenServer.call(__MODULE__, {:get_quiz, code})

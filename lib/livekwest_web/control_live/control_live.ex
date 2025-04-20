@@ -3,26 +3,19 @@ defmodule LivekwestWeb.ControlLive do
 
   import Livekwest.Utils, only: [topic: 1]
 
+  alias Livekwest.Quizzes
   alias Livekwest.QuizManager
   alias Phoenix.PubSub
 
-  @questions [
-    ~s(Which country hosted the first Winter Olympic Games after World War II?),
-    ~s(What countries were involved in the Wars of the Three Kingdoms?),
-    ~s(Which conflict ended with the "Good Friday Agreement"?),
-    ~s(What was the first live-stream video on the internet?),
-    ~s(What was Che Guevara's real first name?),
-    ~s(Who was America's first billionaire?),
-    ~s(In what century did the Dodo become extinct?),
-    ~s(What year was construction of the Sistine Chapel completed in?)
-  ]
+  on_mount LivekwestWeb.Utils.LiveAuth
 
-  def mount(_params, _session, socket) do
+  def mount(%{"id" => quiz_id}, _session, socket) do
     code = :rand.uniform(99999) |> Integer.to_string() |> String.pad_leading(5, "0")
     topic = topic(code)
+    quiz = Quizzes.get(quiz_id, socket.assigns.current_user.id)
 
     PubSub.subscribe(Livekwest.PubSub, topic)
-    QuizManager.init_quiz(code, @questions)
+    QuizManager.init_quiz(code, quiz.questions)
 
     {:ok,
      socket

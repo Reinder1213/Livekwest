@@ -10,17 +10,30 @@ defmodule LivekwestWeb.Router do
     plug :put_secure_browser_headers
   end
 
+  pipeline :authenticated do
+    plug LivekwestWeb.Utils.Plugs.AuthPlug
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
+  end
+
+  scope "/", LivekwestWeb do
+    pipe_through [:browser, :authenticated]
+
+    live "/", DashboardLive
+    live "/control/:id", ControlLive
+    live "/present/:code", PresentationLive
   end
 
   scope "/", LivekwestWeb do
     pipe_through :browser
 
     get "/", PageController, :home
+    get "/login", SessionController, :new
+    post "/login", SessionController, :create
+    delete "/logout", SessionController, :delete
 
-    live "/present/:code", PresentationLive
-    live "/control", ControlLive
     live "/join", JoinLive
   end
 

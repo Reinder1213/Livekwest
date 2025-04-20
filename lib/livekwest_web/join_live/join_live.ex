@@ -2,7 +2,7 @@ defmodule LivekwestWeb.JoinLive do
   use LivekwestWeb, :live_view
 
   import Livekwest.Utils, only: [topic: 1]
-  import LivekwestWeb.LiveHelpers
+  import LivekwestWeb.Utils.LiveHelpers
 
   alias Livekwest.QuizManager
   alias Phoenix.PubSub

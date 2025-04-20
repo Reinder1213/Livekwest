@@ -17,7 +17,8 @@ defmodule Livekwest.Application do
       # {Livekwest.Worker, arg},
       # Start to serve requests, typically the last entry
       LivekwestWeb.Endpoint,
-      Livekwest.QuizManager
+      Livekwest.QuizManager,
+      Livekwest.Repo
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

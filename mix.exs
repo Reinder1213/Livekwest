@@ -54,7 +54,11 @@ defmodule Livekwest.MixProject do
       {:gettext, "~> 0.26"},
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
-      {:bandit, "~> 1.5"}
+      {:bandit, "~> 1.5"},
+      {:ecto_sql, "~> 3.10"},
+      {:postgrex, ">= 0.0.0"},
+      {:bcrypt_elixir, "~> 3.0"},
+      {:guardian, "~> 2.3"}
     ]
   end
 
@@ -66,14 +70,16 @@ defmodule Livekwest.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      setup: ["deps.get", "assets.setup", "assets.build"],
+      setup: ["deps.get", "ecto.setup", "assets.setup", "assets.build"],
       "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
       "assets.build": ["tailwind livekwest", "esbuild livekwest"],
       "assets.deploy": [
         "tailwind livekwest --minify",
         "esbuild livekwest --minify",
         "phx.digest"
-      ]
+      ],
+      "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
+      "ecto.reset": ["ecto.drop", "ecto.setup"]
     ]
   end
 end

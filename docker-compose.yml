@@ -1,0 +1,32 @@
+
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: livekwest_dev
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+  app:
+    hostname: app.
+    build:
+      context: .
+      dockerfile: ./ops/docker_files/dev.dockerfile
+    working_dir: /app
+    depends_on:
+      - db
+    ports:
+      - 4000:4000
+    volumes:
+      - .:/app
+      - deps:/app/deps
+      - _build:/app/_build
+    command: ["mix", "phx.server"]
+
+volumes:
+  pgdata:
+  deps:
+  _build:

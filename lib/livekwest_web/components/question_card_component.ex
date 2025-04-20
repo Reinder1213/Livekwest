@@ -10,7 +10,7 @@ defmodule LivekwestWeb.QuestionCardComponents do
     <div class="card card-xl bg-base-100 shadow-md border">
       <div class="card-body">
         <h2 class="card-title">{@label}</h2>
-        <p class="text-xl">{@question.text}</p>
+        <p class="text-xl">{@question.content}</p>
 
         {render_slot(@inner_block)}
       </div>

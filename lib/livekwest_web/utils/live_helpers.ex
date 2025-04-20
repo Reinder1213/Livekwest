@@ -1,4 +1,4 @@
-defmodule LivekwestWeb.LiveHelpers do
+defmodule LivekwestWeb.Utils.LiveHelpers do
   @moduledoc """
   Helpers to make LiveView function returns more pipe-friendly.
   """
