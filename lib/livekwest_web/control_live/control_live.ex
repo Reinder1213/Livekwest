@@ -12,7 +12,7 @@ defmodule LivekwestWeb.ControlLive do
   def mount(%{"id" => quiz_id}, _session, socket) do
     code = :rand.uniform(99999) |> Integer.to_string() |> String.pad_leading(5, "0")
     topic = topic(code)
-    quiz = Quizzes.get(quiz_id, socket.assigns.current_user.id)
+    quiz = Quizzes.get_by([id: quiz_id, user_id: socket.assigns.current_user.id], [:questions])
 
     PubSub.subscribe(Livekwest.PubSub, topic)
     QuizManager.init_quiz(code, quiz.questions)

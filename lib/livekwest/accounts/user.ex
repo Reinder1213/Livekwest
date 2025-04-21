@@ -1,8 +1,6 @@
 defmodule Livekwest.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
-  import Ecto.Query
-  alias Livekwest.Repo
 
   @email_regex ~r/^[^\s]+@[^\s]+$/
   @password_min_length 8
@@ -33,14 +31,11 @@ defmodule Livekwest.Accounts.User do
     |> put_password_hash()
   end
 
-  defp put_password_hash(%Ecto.Changeset{valid?: true, changes: %{password: password}} = changeset) do
+  defp put_password_hash(
+         %Ecto.Changeset{valid?: true, changes: %{password: password}} = changeset
+       ) do
     put_change(changeset, :password_hash, Bcrypt.hash_pwd_salt(password))
   end
 
   defp put_password_hash(changeset), do: changeset
-
-  def get_by_id(id) do
-    from(u in __MODULE__, where: u.id == ^id)
-    |> Repo.one()
-  end
 end

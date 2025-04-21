@@ -2,7 +2,6 @@ defmodule LivekwestWeb.JoinLive do
   use LivekwestWeb, :live_view
 
   import Livekwest.Utils, only: [topic: 1]
-  import LivekwestWeb.Utils.LiveHelpers
 
   alias Livekwest.QuizManager
   alias Phoenix.PubSub
@@ -41,49 +40,49 @@ defmodule LivekwestWeb.JoinLive do
   ]
 
   def mount(_params, _session, socket) do
-    socket
-    |> assign(:participant, nil)
-    |> assign(:joined, false)
-    |> assign(:code, nil)
-    |> assign(:selected_avatar, @avatar_options |> Enum.random())
-    |> assign(:current_question, nil)
-    |> assign(:started, false)
-    |> assign_avatar_options(@avatar_options)
-    |> ok()
+    {:ok,
+     socket
+     |> assign(:participant, nil)
+     |> assign(:joined, false)
+     |> assign(:code, nil)
+     |> assign(:selected_avatar, @avatar_options |> Enum.random())
+     |> assign(:current_question, nil)
+     |> assign(:started, false)
+     |> assign_avatar_options(@avatar_options)}
   end
 
   def handle_event("join", %{"code" => code, "name" => name}, socket) do
     with :ok <- connect_to_quiz(code),
          {:ok, id} <-
            QuizManager.add_participant(code, %{name: name, avatar: socket.assigns.selected_avatar}) do
-      socket
-      |> put_flash(:info, "Succefully joined room")
-      |> assign(:joined, true)
-      |> assign(:code, code)
-      |> assign(:participant, %{name: name, id: id})
-      |> noreply()
+      {:noreply,
+       socket
+       |> put_flash(:info, "Succefully joined room")
+       |> assign(:joined, true)
+       |> assign(:code, code)
+       |> assign(:participant, %{name: name, id: id})}
     else
       error ->
-        socket
-        |> put_flash(:error, inspect(error))
-        |> noreply()
+        {:noreply,
+         socket
+         |> put_flash(:error, inspect(error))}
     end
   end
 
   def handle_event("select_avatar", %{"url" => url}, socket) do
-    socket
-    |> assign(:selected_avatar, url)
-    |> noreply()
+    {:noreply,
+     socket
+     |> assign(:selected_avatar, url)}
   end
 
   def handle_info({:removed_participant, id}, socket) do
     if socket.assigns.participant.id == id do
       Process.send_after(self(), :kick_redirect, 2000)
 
-      socket
-      |> put_flash(:warn, "You were removed from the quiz")
-      |> redirect(to: ~p"/join")
-      |> noreply()
+      {:noreply,
+       socket
+       |> put_flash(:warn, "You were removed from the quiz")
+       |> redirect(to: ~p"/join")}
     else
       {:noreply, socket}
     end

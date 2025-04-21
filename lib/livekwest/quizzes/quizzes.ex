@@ -1,22 +1,18 @@
 defmodule Livekwest.Quizzes do
-  import Ecto.Query
+  import Livekwest.ContextHelpers
 
   alias Livekwest.Quizzes.Quiz
   alias Livekwest.Repo
 
-  def get(id, user_id) do
-    from(q in Quiz,
-      where: q.id == ^id and q.user_id == ^user_id,
-      preload: [:questions]
-    )
+  def get_by(clauses, preloads \\ []) do
+    Quiz
+    |> build_query(clauses, preloads)
     |> Repo.one()
   end
 
-  def list(user_id) do
-    from(q in Quiz,
-      where: q.user_id == ^user_id,
-      preload: [:questions]
-    )
+  def list(clauses, preloads \\ []) do
+    Quiz
+    |> build_query(clauses, preloads)
     |> Repo.all()
   end
 end

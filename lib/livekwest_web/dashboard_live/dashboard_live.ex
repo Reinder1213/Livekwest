@@ -7,7 +7,7 @@ defmodule LivekwestWeb.DashboardLive do
 
   def mount(_params, _session, socket) do
     user = socket.assigns.current_user
-    quizzes = Quizzes.list(user.id)
+    quizzes = Quizzes.list([user_id: user.id], [:questions])
 
     {:ok,
      socket

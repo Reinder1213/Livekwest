@@ -1,7 +1,7 @@
 defmodule Livekwest.Accounts.Guardian do
   use Guardian, otp_app: :livekwest
 
-  alias Livekwest.Accounts.User
+  alias Livekwest.Accounts
 
   def subject_for_token(%{id: id}, _claims) do
     {:ok, to_string(id)}
@@ -12,7 +12,7 @@ defmodule Livekwest.Accounts.Guardian do
   end
 
   def resource_from_claims(%{"sub" => id}) do
-    case User.get_by_id(id) do
+    case Accounts.get_by(id: id) do
       nil -> {:error, :not_found}
       user -> {:ok, user}
     end
