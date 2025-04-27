@@ -7,6 +7,11 @@
           id="answer-form"
           question={@current_question}
         />
+        <%= if @pending_question_change do %>
+          <p class="font-semibold">
+            New question coming! <span class="font-bold">{@countdown}</span>
+          </p>
+        <% end %>
       </.question_card>
     <% else %>
       <.question_card

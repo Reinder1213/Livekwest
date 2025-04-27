@@ -48,6 +48,8 @@ defmodule LivekwestWeb.JoinLive do
      |> assign(:selected_avatar, @avatar_options |> Enum.random())
      |> assign(:current_question, nil)
      |> assign(:started, false)
+     |> assign(:pending_question_change, false)
+     |> assign(:countdown, 0)
      |> assign_avatar_options(@avatar_options)}
   end
 
@@ -97,8 +99,27 @@ defmodule LivekwestWeb.JoinLive do
      |> assign(:started, true)}
   end
 
-  def handle_info({:active_question_changed, question}, socket) do
-    {:noreply, assign(socket, :question, question)}
+  def handle_info({:active_question_changed, _question}, socket) do
+    Process.send_after(self(), :countdown_tick, 1000)
+
+    {:noreply, assign(socket, :pending_question_change, true) |> assign(:countdown, 4)}
+  end
+
+  def handle_info(:countdown_tick, %{assigns: %{countdown: countdown}} = socket)
+      when countdown > 1 do
+    Process.send_after(self(), :countdown_tick, 1000)
+
+    {:noreply, assign(socket, :countdown, countdown - 1)}
+  end
+
+  def handle_info(:countdown_tick, socket) do
+    question = QuizSession.get_active_question(socket.assigns.code)
+
+    {:noreply,
+     socket
+     |> assign(:pending_question_change, false)
+     |> assign(:current_question, question)
+     |> assign(:countdown, nil)}
   end
 
   def handle_info(:kick_redirect, socket) do
