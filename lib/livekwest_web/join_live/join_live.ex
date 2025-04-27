@@ -3,7 +3,7 @@ defmodule LivekwestWeb.JoinLive do
 
   import Livekwest.Utils, only: [topic: 1]
 
-  alias Livekwest.QuizManager
+  alias Livekwest.QuizSession
   alias Phoenix.PubSub
 
   @avatar_options [
@@ -54,7 +54,7 @@ defmodule LivekwestWeb.JoinLive do
   def handle_event("join", %{"code" => code, "name" => name}, socket) do
     with :ok <- connect_to_quiz(code),
          {:ok, id} <-
-           QuizManager.add_participant(code, %{name: name, avatar: socket.assigns.selected_avatar}) do
+           QuizSession.add_participant(code, %{name: name, avatar: socket.assigns.selected_avatar}) do
       {:noreply,
        socket
        |> put_flash(:info, "Succefully joined room")
@@ -89,7 +89,7 @@ defmodule LivekwestWeb.JoinLive do
   end
 
   def handle_info(:quiz_started, socket) do
-    question = QuizManager.get_active_question(socket.assigns.code)
+    question = QuizSession.get_active_question(socket.assigns.code)
 
     {:noreply,
      socket
@@ -106,7 +106,7 @@ defmodule LivekwestWeb.JoinLive do
   end
 
   def handle_info({:submit_answer, %{question_id: qid, answer: value}}, socket) do
-    QuizManager.submit_answer(socket.assigns.code, qid, socket.assigns.participant.id, value)
+    QuizSession.submit_answer(socket.assigns.code, qid, socket.assigns.participant.id, value)
     {:noreply, socket}
   end
 

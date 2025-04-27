@@ -17,7 +17,8 @@ defmodule Livekwest.Application do
       # {Livekwest.Worker, arg},
       # Start to serve requests, typically the last entry
       LivekwestWeb.Endpoint,
-      Livekwest.QuizManager,
+      {Registry, keys: :unique, name: Livekwest.QuizRegistry},
+      Livekwest.QuizSupervisor,
       Livekwest.Repo
     ]
 

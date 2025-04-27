@@ -3,8 +3,10 @@ defmodule LivekwestWeb.ControlLive do
 
   import Livekwest.Utils, only: [topic: 1]
 
+  require Logger
+
   alias Livekwest.Quizzes
-  alias Livekwest.QuizManager
+  alias Livekwest.QuizSession
   alias Phoenix.PubSub
 
   on_mount LivekwestWeb.Utils.LiveAuth
@@ -15,7 +17,8 @@ defmodule LivekwestWeb.ControlLive do
     quiz = Quizzes.get_by([id: quiz_id, user_id: socket.assigns.current_user.id], [:questions])
 
     PubSub.subscribe(Livekwest.PubSub, topic)
-    QuizManager.init_quiz(code, quiz.questions)
+    Livekwest.QuizSupervisor.start_quiz_session(code)
+    QuizSession.init_quiz(code, quiz.questions)
 
     {:ok,
      socket
@@ -27,31 +30,31 @@ defmodule LivekwestWeb.ControlLive do
   end
 
   def handle_event("start_quiz", _, socket) do
-    QuizManager.start_quiz(socket.assigns.code)
+    QuizSession.start_quiz(socket.assigns.code)
 
     {:noreply, socket}
   end
 
   def handle_event("next_question", _, socket) do
     next_index = socket.assigns.current_index + 1
-    QuizManager.set_active_question(socket.assigns.code, next_index)
+    QuizSession.set_active_question(socket.assigns.code, next_index)
     {:noreply, assign(socket, :current_index, next_index)}
   end
 
   def handle_event("prev_question", _, socket) do
     prev_index = max(socket.assigns.current_index - 1, 0)
-    QuizManager.set_active_question(socket.assigns.code, prev_index)
+    QuizSession.set_active_question(socket.assigns.code, prev_index)
     {:noreply, assign(socket, :current_index, prev_index)}
   end
 
   def handle_event("remove_participant", %{"id" => id}, socket) do
-    QuizManager.remove_participant(socket.assigns.code, id)
+    QuizSession.remove_participant(socket.assigns.code, id)
 
     {:noreply, socket}
   end
 
   def handle_info(:quiz_started, socket) do
-    question = QuizManager.get_active_question(socket.assigns.code)
+    question = QuizSession.get_active_question(socket.assigns.code)
 
     {:noreply,
      socket
@@ -64,7 +67,7 @@ defmodule LivekwestWeb.ControlLive do
   end
 
   def handle_info(:participants_updated, socket) do
-    participants = QuizManager.get_participants(socket.assigns.code)
+    participants = QuizSession.get_participants(socket.assigns.code)
     {:noreply, assign(socket, :participants, participants)}
   end
 

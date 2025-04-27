@@ -8,14 +8,14 @@ defmodule Livekwest.Accounts.User do
   @required [:email, :password, :name]
 
   schema "users" do
-    field :email, :string
-    field :password_hash, :string
-    field :name, :string
+    field(:email, :string)
+    field(:password_hash, :string)
+    field(:name, :string)
 
-    field :password, :string, virtual: true
+    field(:password, :string, virtual: true)
 
-    has_many :quizzes, Livekwest.Quizzes.Quiz
-    has_many :questions, through: [:quizzes, :questions]
+    has_many(:quizzes, Livekwest.Quizzes.Quiz)
+    has_many(:questions, through: [:quizzes, :questions])
 
     timestamps()
   end

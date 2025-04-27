@@ -13,7 +13,7 @@ Project is available at [`localhost:4000`](http://localhost:4000).
 
 ## Features
 
-- State of a quiz is managed in a QuizManager GenServer. It holds quiz state in memory.
+- State of a quiz is managed in a QuizSession GenServer. It holds quiz state in memory.
 - A quiz is initialized from `ControlLive` by quizmaster.
 - LiveViews subscribe to `quiz:<code>` topics via Phoenix PubSub.
 - Broadcasts keep everyone in sync (presentation screen, control screen, join screen).
