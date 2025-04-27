@@ -12,21 +12,33 @@ defmodule LivekwestWeb.ControlLive do
   on_mount LivekwestWeb.Utils.LiveAuth
 
   def mount(%{"id" => quiz_id}, _session, socket) do
-    code = :rand.uniform(99999) |> Integer.to_string() |> String.pad_leading(5, "0")
-    topic = topic(code)
-    quiz = Quizzes.get_by([id: quiz_id, user_id: socket.assigns.current_user.id], [:questions])
-
-    PubSub.subscribe(Livekwest.PubSub, topic)
-    Livekwest.QuizSupervisor.start_quiz_session(code)
-    QuizSession.init_quiz(code, quiz.questions)
+    code = generate_random_quizcode()
 
     {:ok,
      socket
+     |> assign(:quiz_id, quiz_id)
      |> assign(:code, code)
      |> assign(:participants, [])
      |> assign(:current_index, 0)
      |> assign(:current_question, nil)
      |> assign(:started, false)}
+  end
+
+  def handle_event("client_quiz_code", %{"quiz_code" => stored_code}, socket) do
+    topic = topic(stored_code)
+
+    quiz =
+      Quizzes.get_by([id: socket.assigns.quiz_id, user_id: socket.assigns.current_user.id], [
+        :questions
+      ])
+
+    PubSub.subscribe(Livekwest.PubSub, topic)
+    Livekwest.QuizSupervisor.start_quiz_session(stored_code)
+    QuizSession.init_quiz(stored_code, quiz.questions)
+
+    {:noreply,
+     socket
+     |> assign(:code, stored_code)}
   end
 
   def handle_event("start_quiz", _, socket) do
@@ -75,4 +87,7 @@ defmodule LivekwestWeb.ControlLive do
     IO.inspect(msg, label: "#{__MODULE__} | Unhandled PubSub message")
     {:noreply, socket}
   end
+
+  defp generate_random_quizcode(),
+    do: :rand.uniform(99999) |> Integer.to_string() |> String.pad_leading(5, "0")
 end

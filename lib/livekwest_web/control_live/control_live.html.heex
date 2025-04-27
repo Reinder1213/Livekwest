@@ -1,4 +1,4 @@
-<div class="control-screen">
+<div class="control-screen" phx-hook="SessionStorage" id="control-live" data-quiz-code={@code}>
   <div class="flex gap-8 mb-8">
     <%= if !@started do %>
       <div class="flex-auto card bg-base-100 shadow-md border">
