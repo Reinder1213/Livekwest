@@ -6,6 +6,14 @@ defmodule LivekwestWeb.PresentationLive do
   alias Livekwest.QuizSession
   alias Phoenix.PubSub
 
+  @participant_messages [
+    {:start, "is ready to rumble"},
+    {:start, "joined the fun"},
+    {:start, "can't wait to start"},
+    {:end, "Give it up for"},
+    {:end, "Better watch out for"}
+  ]
+
   def mount(%{"code" => code}, _session, socket) do
     topic = topic(code)
     PubSub.subscribe(Livekwest.PubSub, topic)
@@ -82,5 +90,14 @@ defmodule LivekwestWeb.PresentationLive do
   def handle_info(msg, socket) do
     IO.inspect(msg, label: "#{__MODULE__} | Unhandled PubSub message")
     {:noreply, socket}
+  end
+
+  def random_participant_message(name) do
+    @participant_messages
+    |> Enum.random()
+    |> then(fn
+      {:start, val} -> name <> " " <> val
+      {:end, val} -> val <> " " <> name
+    end)
   end
 end

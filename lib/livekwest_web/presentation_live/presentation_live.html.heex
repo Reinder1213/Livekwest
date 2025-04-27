@@ -29,7 +29,7 @@
           <div class="w-36 h-36 p-4 rounded-lg bg-gray-200 flex items-center justify-center font-bold shadow-lg">
             <img src={~p"/images/avatars/#{p.avatar}"} />
           </div>
-          <p class="mt-4 text-xl font-hand">{p.name} joined the fun</p>
+          <p class="mt-4 text-xl font-hand">{random_participant_message(p.name)}</p>
         </div>
       <% end %>
     <% end %>
